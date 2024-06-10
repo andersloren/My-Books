@@ -24,7 +24,14 @@ public class Book {
     )
     private String title;
 
-    @OneToMany(mappedBy = "book")
+    @Size(
+            min = 14,
+            max = 17,
+            message = "ISBN must be between 14 and 17 characters"
+    )
+    private String isbn;
+
+    @ManyToMany(mappedBy = "books")
     private Set<Author> authors = new HashSet<>();
 
     @NotNull
@@ -73,11 +80,11 @@ public class Book {
 
     public void addAuthor(Author author) {
         if (author == null) throw new NullPointerException("Can't add null Author");
-        if (author.getBook() != null)
+        if (author.getBooks() != null)
             throw new IllegalStateException("This author is already assigned to a different Book");
 
         getAuthors().add(author);
-        author.setBook(this);
+        author.addBook(this);
     }
 
     public void removeAuthor(Author author) {

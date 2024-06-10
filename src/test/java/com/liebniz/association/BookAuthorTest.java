@@ -21,14 +21,16 @@ public class BookAuthorTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        CustomProperties customProps = CustomProperties.loadProperties("test");
+        CustomProperties customProps = CustomProperties.loadProperties("sql");
 
         try (Statement statement = MySQLConnection.getConnection().createStatement()) {
             statement.execute(customProps.getProperty("setForeignKeyChecksToZero"));
+            statement.execute(customProps.getProperty("dropAuthorsBooksTestTable"));
             statement.execute(customProps.getProperty("dropAuthorsTestTable"));
             statement.execute(customProps.getProperty("dropBooksTestTable"));
             statement.execute(customProps.getProperty("createBooksTable"));
             statement.execute(customProps.getProperty("createAuthorsTable"));
+            statement.execute(customProps.getProperty("createAuthorsBooksTable"));
             statement.execute(customProps.getProperty("setForeignKeyChecksToOne"));
         }
     }
@@ -51,8 +53,8 @@ public class BookAuthorTest {
             book.setTitle("Title");
             book.setEdition("1st Edition");
 
-            book.addAuthor(author);
-            author.setBook(book);
+            book.getAuthors().add(author);
+            author.getBooks().add(book);
 
             em.persist(book);
             em.persist(author);
