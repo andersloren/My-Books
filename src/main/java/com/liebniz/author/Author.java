@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "authors")
 public class Author {
@@ -29,9 +32,13 @@ public class Author {
     )
     private String lastname;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @ManyToMany
+    @JoinTable(
+            name = "AUTHORS_BOOKS",
+            joinColumns = @JoinColumn(name = "AUTHOR_ID"),
+            inverseJoinColumns = @JoinColumn(name = "BOOK_ID")
+    )
+    private Set<Book> books = new HashSet<>();
 
     public long getId() {
         return id;
@@ -53,11 +60,11 @@ public class Author {
         this.lastname = lastname;
     }
 
-    public Book getBook() {
-        return book;
+    public Set<Book> getBooks() {
+        return this.books;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void addBook(Book book) {
+        this.books.add(book);
     }
 }
