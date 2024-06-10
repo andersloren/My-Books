@@ -1,18 +1,16 @@
 package com.liebniz.book;
 
+import com.liebniz.persistence.CustomEntityManagerFactory;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.MySQLConnection;
 import com.liebniz.system.CustomProperties;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
-import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,33 +34,32 @@ class BookTest {
 
     @Test
     void testSave() {
-        CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
+        CustomPersistenceUnitInfo unitInfo = new CustomPersistenceUnitInfo("test");
 
-        EntityManagerFactory emf = new HibernatePersistenceProvider()
-                .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of());
+        try (CustomEntityManagerFactory customEmf = new CustomEntityManagerFactory(unitInfo)) {
 
-        try (EntityManager em = emf.createEntityManager()) {
+            try (EntityManager em = customEmf.createEntityManager()) {
 
-            em.getTransaction().begin();
+                em.getTransaction().begin();
 
-            Book book = new Book();
-            book.setTitle("New Book");
-            book.setEdition("1st Edition");
+                Book book = new Book();
+                book.setTitle("TestSave Book");
+                book.setEdition("1st Edition");
 
-            em.persist(book);
+                em.persist(book);
 
-            em.flush();
+                em.flush();
 
-            String jpql = "SELECT b FROM Book b WHERE b.title = :title";
-            TypedQuery<Book> tq = em.createQuery(jpql, Book.class);
-            tq.setParameter("title", "New Book");
+                String jpql = "SELECT b FROM Book b WHERE b.title = :title";
+                TypedQuery<Book> tq = em.createQuery(jpql, Book.class);
+                tq.setParameter("title", "TestSave Book");
 
-            Book foundBook = tq.getSingleResult();
+                Book foundBook = tq.getSingleResult();
 
-            assertEquals(book, foundBook);
+                assertEquals(book, foundBook);
 
-            em.getTransaction().commit();
-
+                em.getTransaction().commit();
+            }
         }
     }
 }

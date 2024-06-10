@@ -1,21 +1,19 @@
 package com.liebniz.book;
 
+import com.liebniz.persistence.CustomEntityManagerFactory;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.MySQLConnection;
 import com.liebniz.system.CustomProperties;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
-import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ServiceBookTest {
 
@@ -37,42 +35,42 @@ class ServiceBookTest {
 
     @Test
     void findAllBooks() {
-        CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
+        CustomPersistenceUnitInfo unitInfo = new CustomPersistenceUnitInfo("test");
 
-        EntityManagerFactory emf = new HibernatePersistenceProvider()
-                .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of());
+        try (CustomEntityManagerFactory customEmf = new CustomEntityManagerFactory(unitInfo)) {
 
-        try (EntityManager em = emf.createEntityManager()) {
+            try (EntityManager em = customEmf.createEntityManager()) {
 
-            em.getTransaction().begin();
+                em.getTransaction().begin();
 
-            Book book1 = new Book();
-            book1.setTitle("Title Book 1");
-            book1.setEdition("Edition 1 Book 1");
+                Book book1 = new Book();
+                book1.setTitle("Title Book 1");
+                book1.setEdition("Edition 1 Book 1");
 
-            Book book2 = new Book();
-            book2.setTitle("Title Book 2");
-            book2.setEdition("Edition 2 Book 2");
+                Book book2 = new Book();
+                book2.setTitle("Title Book 2");
+                book2.setEdition("Edition 2 Book 2");
 
-            Book book3 = new Book();
-            book3.setTitle("Title Book 3");
-            book3.setEdition("Edition 3 Book 3");
+                Book book3 = new Book();
+                book3.setTitle("Title Book 3");
+                book3.setEdition("Edition 3 Book 3");
 
-            em.persist(book1);
-            em.persist(book2);
-            em.persist(book3);
+                em.persist(book1);
+                em.persist(book2);
+                em.persist(book3);
 
-            em.flush();
+                em.flush();
 
-            String jpql = "SELECT a FROM Book a";
-            TypedQuery<Book> typedQuery = em.createQuery(jpql, Book.class);
+                String jpql = "SELECT a FROM Book a";
+                TypedQuery<Book> typedQuery = em.createQuery(jpql, Book.class);
 
 
-            List<Book> allBooks = typedQuery.getResultList();
+                List<Book> allBooks = typedQuery.getResultList();
 
-            assertEquals(3, allBooks.size());
+                assertEquals(3, allBooks.size());
 
-            em.getTransaction().commit();
+                em.getTransaction().commit();
+            }
         }
     }
 }
