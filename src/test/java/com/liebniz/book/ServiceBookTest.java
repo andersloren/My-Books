@@ -1,21 +1,21 @@
-package com.liebniz.association;
+package com.liebniz.book;
 
-import com.liebniz.author.Author;
-import com.liebniz.book.Book;
 import com.liebniz.persistence.CustomEntityManagerFactory;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.MySQLConnection;
 import com.liebniz.system.CustomProperties;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
-public class BookAuthorTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ServiceBookTest {
 
     @BeforeEach
     void setUp() throws SQLException {
@@ -34,34 +34,40 @@ public class BookAuthorTest {
     }
 
     @Test
-    void testFindBookAuthorAssociation() {
+    void findAllBooks() {
         CustomPersistenceUnitInfo unitInfo = new CustomPersistenceUnitInfo("test");
 
         try (CustomEntityManagerFactory customEmf = new CustomEntityManagerFactory(unitInfo)) {
 
             try (EntityManager em = customEmf.createEntityManager()) {
+
                 em.getTransaction().begin();
 
-                Author author = new Author();
-                author.setFirstname("Firstname");
-                author.setLastname("Lastname");
+                Book book1 = new Book();
+                book1.setTitle("Title Book 1");
+                book1.setEdition("Edition 1 Book 1");
 
-                Book book = new Book();
-                book.setTitle("Title");
-                book.setEdition("1st Edition");
+                Book book2 = new Book();
+                book2.setTitle("Title Book 2");
+                book2.setEdition("Edition 2 Book 2");
 
-                book.getAuthors().add(author);
-                author.getBooks().add(book);
+                Book book3 = new Book();
+                book3.setTitle("Title Book 3");
+                book3.setEdition("Edition 3 Book 3");
 
-                em.persist(book);
-                em.persist(author);
+                em.persist(book1);
+                em.persist(book2);
+                em.persist(book3);
 
-                String jpql = "SELECT b FROM Book b JOIN b.authors a WHERE a.id = :authorId";
-                TypedQuery<Book> tq = em.createQuery(jpql, Book.class);
-                tq.setParameter("authorId", 1);
-                Book foundBook = tq.getSingleResult();
+                em.flush();
 
-                Assertions.assertEquals(book, foundBook);
+                String jpql = "SELECT a FROM Book a";
+                TypedQuery<Book> typedQuery = em.createQuery(jpql, Book.class);
+
+
+                List<Book> allBooks = typedQuery.getResultList();
+
+                assertEquals(3, allBooks.size());
 
                 em.getTransaction().commit();
             }
