@@ -1,6 +1,6 @@
 package com.liebniz;
 
-import com.liebniz.persistence.MySQLConnection;
+import com.liebniz.persistence.CustomSQLConnection;
 import com.liebniz.system.CustomProperties;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ public class ResourcesTest {
 
         CustomProperties customProps = CustomProperties.loadProperties("sql");
 
-        try (Statement statement = MySQLConnection.getConnection().createStatement()) {
+        try (Statement statement = CustomSQLConnection.getConnection().createStatement()) {
             statement.execute(customProps.getProperty("setForeignKeyChecksToZero"));
             statement.execute(customProps.getProperty("dropAuthorsTestTable"));
             statement.execute(customProps.getProperty("dropBooksTestTable"));
