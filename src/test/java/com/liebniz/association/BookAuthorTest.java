@@ -4,7 +4,7 @@ import com.liebniz.author.Author;
 import com.liebniz.book.Book;
 import com.liebniz.persistence.CustomEntityManagerFactory;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
-import com.liebniz.persistence.MySQLConnection;
+import com.liebniz.persistence.CustomSQLConnection;
 import com.liebniz.system.CustomProperties;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -21,7 +21,7 @@ public class BookAuthorTest {
     void setUp() throws SQLException {
         CustomProperties customProps = CustomProperties.loadProperties("sql");
 
-        try (Statement statement = MySQLConnection.getConnection().createStatement()) {
+        try (Statement statement = CustomSQLConnection.getConnection().createStatement()) {
             statement.execute(customProps.getProperty("setForeignKeyChecksToZero"));
             statement.execute(customProps.getProperty("dropAuthorsBooksTestTable"));
             statement.execute(customProps.getProperty("dropAuthorsTestTable"));

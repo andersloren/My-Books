@@ -1,5 +1,6 @@
 package com.liebniz.persistence;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.metamodel.Metamodel;
@@ -7,9 +8,13 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import java.util.Map;
 
+@RequestScoped
 public class CustomEntityManagerFactory implements EntityManagerFactory {
 
-    private final CustomPersistenceUnitInfo customPersistenceUnitInfo;
+    public CustomEntityManagerFactory() {
+    }
+
+    private CustomPersistenceUnitInfo customPersistenceUnitInfo;
 
     public CustomEntityManagerFactory(CustomPersistenceUnitInfo customPersistenceUnitInfo) {
         this.customPersistenceUnitInfo = customPersistenceUnitInfo;
