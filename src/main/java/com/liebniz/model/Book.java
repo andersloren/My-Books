@@ -2,6 +2,8 @@ package com.liebniz.model;
 
 import com.liebniz.model.Author;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -16,9 +18,9 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
+//    @NotNull(message = "Invalid Title. Please provide a title.")
+    @NotEmpty(message = "Invalid Title. Please provide a title.")
     @Size(
-            min = 2,
             max = 255,
             message = "Book title must be between 2 and 255 characters"
     )
@@ -31,15 +33,15 @@ public class Book {
     )
     private String isbn;
 
-    @ManyToMany(mappedBy = "books")
-    private Set<Author> authors = new HashSet<>();
-
     @Size(
-            min = 2,
+            min = 3,
             max = 20,
-            message = "Book edition must be between 2 and 20 characters"
+            message = "Book edition must be between 3 and 20 characters"
     )
     private String edition;
+
+    @ManyToMany(mappedBy = "books")
+    private Set<Author> authors = new HashSet<>();
 
     /**
      * Getter and Setters
