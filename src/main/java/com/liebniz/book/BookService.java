@@ -18,7 +18,6 @@ import java.util.Map;
 @RequestScoped
 public class BookService {
 
-
     public BookService() {
     }
 

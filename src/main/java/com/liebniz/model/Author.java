@@ -31,7 +31,7 @@ public class Author {
     )
     private String lastname;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "AUTHORS_BOOKS",
             joinColumns = @JoinColumn(name = "AUTHOR_ID"),
