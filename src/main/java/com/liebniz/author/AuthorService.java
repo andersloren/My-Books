@@ -1,63 +1,59 @@
-package com.liebniz.book;
+package com.liebniz.author;
 
 import com.liebniz.model.Author;
-import com.liebniz.model.Book;
-import com.liebniz.model.dto.BookDtoForm;
+import com.liebniz.model.dto.AuthorDtoForm;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.system.exception.CustomObjectNotFoundException;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-@RequestScoped
-public class BookService {
+public class AuthorService {
 
-
-    public BookService() {
+    public AuthorService() {
     }
 
-    public List<Book> findAllBooks() {
+    public List<Author> findAllAuthors() {
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
         try (EntityManagerFactory emf = new HibernatePersistenceProvider()
                 .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of())) {
 
             try (EntityManager em = emf.createEntityManager()) {
-                String jpql = "SELECT b FROM Book b";
-                TypedQuery<Book> typedQuery = em.createQuery(jpql, Book.class);
+                String jpql = "SELECT a FROM Author a";
+                TypedQuery<Author> typedQuery = em.createQuery(jpql, Author.class);
 
-                List<Book> allBooks = typedQuery.getResultList();
+                List<Author> allAuthors = typedQuery.getResultList();
 
-                return allBooks;
+                return allAuthors;
             }
         }
     }
 
-    public Book findBookById(long bookId) {
+    public Author findAuthorById(long authorId) {
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
+        try (EntityManagerFactory emf = new HibernatePersistenceProvider()
+                .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of())) {
 
-        EntityManagerFactory emf = new HibernatePersistenceProvider()
-                .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of());
-        try (EntityManager em = emf.createEntityManager()) {
-            try {
-                Book book = em.find(Book.class, bookId);
-                if (book == null) {
-                    throw new CustomObjectNotFoundException("book", bookId);
+            try (EntityManager em = emf.createEntityManager()) {
+                try {
+                    Author author = em.find(Author.class, authorId);
+                    if (author == null) {
+                        throw new CustomObjectNotFoundException("author", authorId);
+                    }
+                    return author;
+                } catch (PersistenceException e) {
+                    throw new RuntimeException("Error finding author", e);
                 }
-                return book;
-            } catch (PersistenceException e) {
-                throw new RuntimeException("Error finding book", e);
             }
         }
     }
 
-    public Book saveBook(Book book) {
-        Book returnedBook = new Book();
+    public Author saveAuthor(Author book) {
+        Author returnedAuthor = new Author();
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
         try (EntityManagerFactory emf = new HibernatePersistenceProvider()
                 .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of())) {
@@ -66,20 +62,24 @@ public class BookService {
                 em.getTransaction().begin();
 
                 em.persist(book);
-                returnedBook = book;
+                returnedAuthor = book;
 
                 em.getTransaction().commit();
 
 
             }
-            return returnedBook;
+            return returnedAuthor;
         }
     }
 
-    public Book updateBook(BookDtoForm bookDtoForm, long bookId) {
-        if (bookDtoForm == null) throw new NullPointerException("Cannot update empty Book");
+    public void changeBooksForAuthor(long bookId) {
 
-        Book updatedBook;
+    }
+
+    public Author updateAuthor(AuthorDtoForm authorDtoForm, long bookId) {
+        if (authorDtoForm == null) throw new NullPointerException("Cannot update empty Author");
+
+        Author updatedAuthor;
 
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
         try (EntityManagerFactory emf = new HibernatePersistenceProvider()
@@ -88,32 +88,32 @@ public class BookService {
             try (EntityManager em = emf.createEntityManager()) {
                 em.getTransaction().begin();
 
-                Book foundBook = em.find(Book.class, bookId);
-                System.out.println(foundBook.toString());
+                Author foundAuthor = em.find(Author.class, bookId);
 
-                foundBook.setTitle(bookDtoForm.title());
-                foundBook.setIsbn(bookDtoForm.isbn());
-                foundBook.setEdition(bookDtoForm.edition());
+                foundAuthor.setFirstname(authorDtoForm.firstname());
+                foundAuthor.setLastname(authorDtoForm.lastname());
 
                 // TODO: 11/06/2024 Uncomment this once updateAuthor is done!
 //                if (bookDtoForm.authors() != null) {
 //                    for (Author author : bookDtoForm.authors()) {
-//                        foundBook.addAuthor(author);
-//                        author.addBook(foundBook);
+//                        foundAuthor.addAuthor(author);
+//                        author.addAuthor(foundAuthor);
 //                        this.authorService.updateAuthor(bookDtoForm.authors(), bookId);
 //                    }
 //                }
 
-                updatedBook = foundBook;
-                em.persist(foundBook);
+                updatedAuthor = foundAuthor;
+                em.persist(foundAuthor);
 
                 em.getTransaction().commit();
             }
         }
-        return updatedBook;
+        return updatedAuthor;
     }
 
-    public void deleteBookById(long bookId) {
+//    public void
+
+    public void deleteAuthorById(long bookId) {
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
         try (EntityManagerFactory emf = new HibernatePersistenceProvider()
                 .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of())) {
@@ -121,8 +121,8 @@ public class BookService {
             try (EntityManager em = emf.createEntityManager()) {
                 em.getTransaction().begin();
 
-                Book foundBook = em.find(Book.class, bookId);
-                em.remove(foundBook);
+                Author foundAuthor = em.find(Author.class, bookId);
+                em.remove(foundAuthor);
 
                 em.getTransaction().commit();
             }

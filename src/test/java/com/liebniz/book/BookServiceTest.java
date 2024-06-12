@@ -5,6 +5,7 @@ import com.liebniz.model.dto.BookDtoForm;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.CustomSQLConnection;
 import com.liebniz.system.CustomProperties;
+import com.liebniz.system.exception.CustomObjectNotFoundException;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -17,7 +18,9 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BookServiceTest {
 
@@ -73,7 +76,7 @@ class BookServiceTest {
     }
 
     @Test
-    void findAllBooks() {
+    void testFindAllBooks() {
         List<Book> allBooks = this.bookService.findAllBooks();
 
         assertEquals(allBooks.size(), 3);
@@ -87,6 +90,17 @@ class BookServiceTest {
         assertEquals(foundBook.getTitle(), "Title Book 1");
         assertEquals(foundBook.getIsbn(), "123-456-789-01");
         assertEquals(foundBook.getEdition(), "1st Edition");
+    }
+
+    @Test
+    void testFindBookByInvalidId() {
+        Throwable thrown = assertThrows(CustomObjectNotFoundException.class,
+                () -> this.bookService.findBookById(10L));
+
+        assertThat(thrown)
+                .isInstanceOf(CustomObjectNotFoundException.class)
+                .hasMessage("Could not find book with Id 10");
+
     }
 
     @Test
