@@ -1,6 +1,7 @@
 package com.liebniz.book;
 
 import com.liebniz.model.Book;
+import com.liebniz.model.dto.BookDtoForm;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
@@ -78,12 +79,13 @@ public class BookService {
                 em.getTransaction().begin();
 
                 Book foundBook = em.find(Book.class, bookId);
+                System.out.println(foundBook.toString());
 
                 if (bookDtoForm.title() != null) {
                     foundBook.setTitle(bookDtoForm.title());
                 }
                 if (bookDtoForm.isbn() != null) {
-                    foundBook.setIsbn(bookDtoForm.title());
+                    foundBook.setIsbn(bookDtoForm.isbn());
                 }
                 if (bookDtoForm.edition() != null) {
                     foundBook.setEdition(bookDtoForm.edition());
@@ -96,8 +98,10 @@ public class BookService {
 //                        this.authorService.updateAuthor(bookDtoForm.authors(), bookId);
 //                    }
 //                }
+
                 updatedBook = foundBook;
                 em.persist(foundBook);
+
                 em.getTransaction().commit();
             }
         }
