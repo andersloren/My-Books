@@ -36,7 +36,7 @@ public class BookAuthorTest {
     @Test
     void testFindBookAuthorAssociation() {
         CustomPersistenceUnitInfo unitInfo = new CustomPersistenceUnitInfo("test");
-        unitInfo.setProperties("hibernate.hbm2ddl.auto", "create");
+//        unitInfo.setProperties("hibernate.hbm2ddl.auto", "create");
 
         try (CustomEntityManagerFactory customEmf = new CustomEntityManagerFactory(unitInfo)) {
 
