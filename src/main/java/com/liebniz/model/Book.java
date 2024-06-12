@@ -1,6 +1,6 @@
-package com.liebniz.book;
+package com.liebniz.model;
 
-import com.liebniz.author.Author;
+import com.liebniz.model.Author;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

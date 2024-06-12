@@ -1,7 +1,7 @@
 package com.liebniz.association;
 
-import com.liebniz.author.Author;
-import com.liebniz.book.Book;
+import com.liebniz.model.Author;
+import com.liebniz.model.Book;
 import com.liebniz.persistence.CustomEntityManagerFactory;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.CustomSQLConnection;

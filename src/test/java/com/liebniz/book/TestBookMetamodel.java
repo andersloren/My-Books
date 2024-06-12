@@ -1,16 +1,15 @@
 package com.liebniz.book;
 
-import com.liebniz.author.Author;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.ManagedType;
 import jakarta.persistence.metamodel.Metamodel;
+import jakarta.persistence.metamodel.SingularAttribute;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,7 +20,7 @@ public class TestBookMetamodel {
     void testBookMetamodel() {
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
 
-        Set<String> entities = new HashSet<>();
+        List<String> entities = new ArrayList<>();
         entities.add("Author");
         entities.add("Book");
 
@@ -33,11 +32,32 @@ public class TestBookMetamodel {
         Set<ManagedType<?>> managedTypes = mm.getManagedTypes();
         assertEquals(managedTypes.size(), 2);
 
+        int counter = 0;
+
         for (ManagedType<?> managedType : managedTypes) {
             int periodPlace = managedType.getJavaType().getTypeName().lastIndexOf(".") + 1;
             int stringLength = managedType.getJavaType().getTypeName().length();
-            System.out.println(managedType.getJavaType().getTypeName().substring(periodPlace, stringLength));
-            assertTrue(entities.contains(managedType.getJavaType().getTypeName().substring(periodPlace, stringLength)));
+            if (managedType.getJavaType().getTypeName().substring(periodPlace, stringLength).equals("Author")) {
+
+                SingularAttribute<?, ?> firstnameAttribute = managedType.getSingularAttribute("firstname");
+                assertEquals(
+                        firstnameAttribute.getJavaType(),
+                        String.class
+                );
+                assertEquals(
+                        firstnameAttribute.getPersistentAttributeType(),
+                        Attribute.PersistentAttributeType.BASIC
+                );
+                SingularAttribute<?, ?> lastnameAttribute = managedType.getSingularAttribute("lastname");
+                assertEquals(
+                        firstnameAttribute.getJavaType(),
+                        String.class
+                );
+                assertEquals(
+                        lastnameAttribute.getPersistentAttributeType(),
+                        Attribute.PersistentAttributeType.BASIC
+                );
+            }
         }
     }
 }

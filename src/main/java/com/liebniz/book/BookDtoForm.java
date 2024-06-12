@@ -1,6 +1,6 @@
 package com.liebniz.book;
 
-import com.liebniz.author.Author;
+import com.liebniz.model.Author;
 
 import java.util.Set;
 

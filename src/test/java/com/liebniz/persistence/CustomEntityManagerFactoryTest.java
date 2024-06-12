@@ -1,6 +1,6 @@
 package com.liebniz.persistence;
 
-import com.liebniz.book.Book;
+import com.liebniz.model.Book;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.Test;

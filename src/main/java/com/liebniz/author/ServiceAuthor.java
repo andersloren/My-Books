@@ -1,5 +1,6 @@
 package com.liebniz.author;
 
+import com.liebniz.model.Author;
 import com.liebniz.persistence.CustomEntityManagerFactory;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import jakarta.persistence.EntityManager;
