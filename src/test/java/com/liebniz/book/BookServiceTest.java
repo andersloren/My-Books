@@ -1,6 +1,7 @@
 package com.liebniz.book;
 
-import com.liebniz.author.Author;
+import com.liebniz.model.Author;
+import com.liebniz.model.Book;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.CustomSQLConnection;
 import com.liebniz.system.CustomProperties;

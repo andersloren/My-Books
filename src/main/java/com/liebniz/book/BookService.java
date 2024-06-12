@@ -1,5 +1,6 @@
 package com.liebniz.book;
 
+import com.liebniz.model.Book;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;

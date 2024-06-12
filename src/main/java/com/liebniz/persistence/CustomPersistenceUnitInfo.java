@@ -57,8 +57,8 @@ public class CustomPersistenceUnitInfo implements PersistenceUnitInfo {
     @Override
     public List<String> getManagedClassNames() {
         return List.of(
-                "com.liebniz.book.Book",
-                "com.liebniz.author.Author"
+                "com.liebniz.model.Book",
+                "com.liebniz.model.Author"
         );
     }
 
