@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MySQLConnection {
+public class CustomSQLConnection {
 
     private static final String JDBC_URL = "jdbc:mysql://localhost/my-books-test";
     private static final String JDBC_USER = System.getenv("MYSQL_USERNAME");

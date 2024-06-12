@@ -1,6 +1,5 @@
-package com.liebniz.author;
+package com.liebniz.model;
 
-import com.liebniz.book.Book;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -66,5 +65,15 @@ public class Author {
 
     public void addBook(Book book) {
         this.books.add(book);
+    }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", books=" + books +
+                '}';
     }
 }
