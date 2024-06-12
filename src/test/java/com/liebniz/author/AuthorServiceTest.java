@@ -1,10 +1,8 @@
 package com.liebniz.author;
 
-import com.liebniz.book.BookService;
 import com.liebniz.model.Author;
 import com.liebniz.model.Book;
 import com.liebniz.model.dto.AuthorDtoForm;
-import com.liebniz.model.dto.BookDtoForm;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.CustomSQLConnection;
 import com.liebniz.system.CustomProperties;
@@ -22,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AuthorServiceTest {
 
@@ -105,11 +104,11 @@ class AuthorServiceTest {
 
         authorService = new AuthorService();
     }
-    
+
     @Test
     void testBeforeAll() {
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
-        
+
         EntityManagerFactory emf = new HibernatePersistenceProvider()
                 .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of());
 
@@ -184,6 +183,34 @@ class AuthorServiceTest {
         Author updatedAuthor = this.authorService.updateAuthor(authorDtoForm, 1L);
         assertEquals(updatedAuthor.getFirstname(), "New Author Firstname");
         assertEquals(updatedAuthor.getLastname(), "New Author Lastname");
+    }
+
+    @Test
+    void testChangeAuthorsBooks() {
+        long authorId = 3;
+        long bookId = 1;
+
+        this.authorService.changeAuthorsBooks(authorId, bookId);
+
+        CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
+
+        Author author;
+        Book book;
+
+        EntityManagerFactory emf = new HibernatePersistenceProvider()
+                .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of());
+
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            author = em.find(Author.class, authorId);
+            book = em.find(Book.class, bookId);
+
+            em.getTransaction().commit();
+        }
+
+        assertEquals(book.getAuthors().size(), 2);
+        assertEquals(author.getBooks().size(), 2);
     }
 
     @Test

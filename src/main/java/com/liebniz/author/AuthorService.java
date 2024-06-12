@@ -1,18 +1,26 @@
 package com.liebniz.author;
 
+import com.liebniz.book.BookService;
 import com.liebniz.model.Author;
+import com.liebniz.model.Book;
 import com.liebniz.model.dto.AuthorDtoForm;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.system.exception.CustomObjectNotFoundException;
-import jakarta.persistence.*;
-import org.hibernate.ObjectNotFoundException;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class AuthorService {
+
+    @Inject
+    private BookService bookService;
 
     public AuthorService() {
     }
@@ -72,10 +80,6 @@ public class AuthorService {
         }
     }
 
-    public void changeBooksForAuthor(long bookId) {
-
-    }
-
     public Author updateAuthor(AuthorDtoForm authorDtoForm, long bookId) {
         if (authorDtoForm == null) throw new NullPointerException("Cannot update empty Author");
 
@@ -111,7 +115,45 @@ public class AuthorService {
         return updatedAuthor;
     }
 
-//    public void
+    @Transactional
+    public void changeAuthorsBooks(long authorId, long bookId) {
+        CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
+        try (EntityManagerFactory emf = new HibernatePersistenceProvider()
+                .createContainerEntityManagerFactory(customPersistenceUnitInfo, Map.of())) {
+
+            try (EntityManager em = emf.createEntityManager()) {
+                em.getTransaction().begin();
+
+                Author foundAuthor = em.find(Author.class, authorId);
+                Book foundBook = em.find(Book.class, bookId);
+
+                System.out.println("Found Author Books Size: " + foundAuthor.getBooks().size());
+                System.out.println("Found Books Authors Size: " + foundBook.getAuthors().size());
+
+                if (!foundBook.getAuthors().contains(foundAuthor)) {
+                    foundBook.getAuthors().add(foundAuthor);
+                } else {
+                    foundBook.getAuthors().remove(foundAuthor);
+                }
+
+                if (!foundAuthor.getBooks().contains(foundBook)) {
+                    foundAuthor.getBooks().add(foundBook);
+                } else {
+                    foundAuthor.getBooks().remove(foundBook);
+                }
+
+                System.out.println("Found Author Books Size: " + foundAuthor.getBooks().size());
+                System.out.println("Found Books Authors Size: " + foundBook.getAuthors().size());
+
+                em.persist(foundAuthor);
+                em.persist(foundBook);
+
+                em.flush();
+
+                em.getTransaction().commit();
+            }
+        }
+    }
 
     public void deleteAuthorById(long bookId) {
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
