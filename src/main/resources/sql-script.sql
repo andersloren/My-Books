@@ -9,9 +9,7 @@ create table BOOKS (
 create table AUTHORS (
 	ID bigint AUTO_INCREMENT primary key,
     FIRSTNAME varchar(40),
-    LASTNAME varchar(40),
-    BOOK_ID bigint,
-    foreign key (BOOK_ID) references BOOKS(ID)
+    LASTNAME varchar(40)
 );
 
 create table AUTHORS_BOOKS (
@@ -26,9 +24,6 @@ SELECT * FROM BOOKS;
 SELECT * FROM AUTHORS;
 SELECT * FROM AUTHORS_BOOKS;
 
-select * from BOOKS b
-	left outer join AUTHORS a
-		on a.BOOK_ID = b.ID
-where b.ID = 1;
-
 SHOW STATUS LIKE '%Threads_connected%';
+
+set global max_connections = 250;

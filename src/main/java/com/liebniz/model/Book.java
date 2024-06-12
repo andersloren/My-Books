@@ -40,7 +40,7 @@ public class Book {
     )
     private String edition;
 
-    @ManyToMany(mappedBy = "books")
+    @ManyToMany(mappedBy = "books", fetch = FetchType.EAGER)
     private Set<Author> authors = new HashSet<>();
 
     /**
