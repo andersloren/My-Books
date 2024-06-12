@@ -1,4 +1,4 @@
-package com.liebniz.book;
+package com.liebniz;
 
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import jakarta.persistence.EntityManagerFactory;
@@ -14,7 +14,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestBookMetamodel {
+public class TestMetamodel {
 
     @Test
     void testBookMetamodel() {
