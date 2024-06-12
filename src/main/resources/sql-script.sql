@@ -30,3 +30,5 @@ select * from BOOKS b
 	left outer join AUTHORS a
 		on a.BOOK_ID = b.ID
 where b.ID = 1;
+
+SHOW STATUS LIKE '%Threads_connected%';

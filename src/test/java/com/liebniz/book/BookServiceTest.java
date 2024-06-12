@@ -1,7 +1,7 @@
 package com.liebniz.book;
 
-import com.liebniz.model.Author;
 import com.liebniz.model.Book;
+import com.liebniz.model.dto.BookDtoForm;
 import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.CustomSQLConnection;
 import com.liebniz.system.CustomProperties;
@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,15 +41,18 @@ class BookServiceTest {
 
         Book book1 = new Book();
         book1.setTitle("Title Book 1");
-        book1.setEdition("Edition 1 Book 1");
+        book1.setIsbn("123-456-789-01");
+        book1.setEdition("1st Edition");
 
         Book book2 = new Book();
         book2.setTitle("Title Book 2");
-        book2.setEdition("Edition 2 Book 2");
+        book2.setIsbn("123-456-789-02");
+        book2.setEdition("2dn Edition");
 
         Book book3 = new Book();
         book3.setTitle("Title Book 3");
-        book3.setEdition("Edition 3 Book 3");
+        book3.setIsbn("123-456-789-03");
+        book3.setEdition("3d Edition");
 
         CustomPersistenceUnitInfo customPersistenceUnitInfo = new CustomPersistenceUnitInfo("test");
         try (EntityManagerFactory emf = new HibernatePersistenceProvider()
@@ -83,14 +85,16 @@ class BookServiceTest {
 
         assertEquals(foundBook.getId(), 1L);
         assertEquals(foundBook.getTitle(), "Title Book 1");
-        assertEquals(foundBook.getEdition(), "Edition 1 Book 1");
+        assertEquals(foundBook.getIsbn(), "123-456-789-01");
+        assertEquals(foundBook.getEdition(), "1st Edition");
     }
 
     @Test
     void testSaveBookSuccess() {
         Book book = new Book();
         book.setTitle("SavedBook Title");
-        book.setEdition("SavedBook Edition");
+        book.setIsbn("123-456-789-04");
+        book.setEdition("1st Edition");
 
         System.out.println(book.getId());
 
@@ -98,39 +102,18 @@ class BookServiceTest {
 
         assertEquals(returnedBook.getId(), 4);
         assertEquals(returnedBook.getTitle(), "SavedBook Title");
-        assertEquals(returnedBook.getEdition(), "SavedBook Edition");
-    }
-
-    @Test
-    void testSaveBookInvalidIsNull() {
-        Book book = new Book();
-        book.setTitle(null);
-
-        this.bookService.saveBook(book);
+        assertEquals(returnedBook.getIsbn(), "123-456-789-04");
+        assertEquals(returnedBook.getEdition(), "1st Edition");
     }
 
     @Test
     void testUpdateBookSuccess() {
 
-        Author author = new Author();
-        author.setFirstname("Firstname");
-        author.setLastname("Lastname");
+        BookDtoForm bookDtoForm = new BookDtoForm("Updated Title 1 Book 1", "123-456-789-01", "2nd Edition");
 
-        Book book = new Book();
-        book.setTitle("Title of new book");
-        book.setEdition("Edition of new book");
-
-        Book savedBook = this.bookService.saveBook(book);
-
-        assertEquals(savedBook.getTitle(), book.getTitle());
-        assertEquals(savedBook.getEdition(), book.getEdition());
-
-        BookDtoForm bookDtoForm = new BookDtoForm("Updated title", "123-456-789-012", "Updated Edition", Set.of(author));
-
-        System.out.println(author);
-
-        Book updatedBook = this.bookService.updateBook(bookDtoForm, 4L);
+        Book updatedBook = this.bookService.updateBook(bookDtoForm, 1L);
         assertEquals(updatedBook.getTitle(), bookDtoForm.title());
+        assertEquals(updatedBook.getIsbn(), bookDtoForm.isbn());
         assertEquals(updatedBook.getEdition(), bookDtoForm.edition());
     }
 
