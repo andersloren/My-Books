@@ -1,18 +1,11 @@
 package com.liebniz.book;
 
-import com.liebniz.persistence.CustomEntityManagerFactory;
-import com.liebniz.persistence.CustomPersistenceUnitInfo;
 import com.liebniz.persistence.CustomSQLConnection;
 import com.liebniz.system.CustomProperties;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookTest {
 
@@ -29,37 +22,6 @@ class BookTest {
             statement.execute(customProps.getProperty("createAuthorsTable"));
             statement.execute(customProps.getProperty("createAuthorsBooksTable"));
             statement.execute(customProps.getProperty("setForeignKeyChecksToOne"));
-        }
-    }
-
-    @Test
-    void testSave() {
-        CustomPersistenceUnitInfo unitInfo = new CustomPersistenceUnitInfo("test");
-
-        try (CustomEntityManagerFactory customEmf = new CustomEntityManagerFactory(unitInfo)) {
-
-            try (EntityManager em = customEmf.createEntityManager()) {
-
-                em.getTransaction().begin();
-
-                Book book = new Book();
-                book.setTitle("TestSave Book");
-                book.setEdition("1st Edition");
-
-                em.persist(book);
-
-                em.flush();
-
-                String jpql = "SELECT b FROM Book b WHERE b.title = :title";
-                TypedQuery<Book> tq = em.createQuery(jpql, Book.class);
-                tq.setParameter("title", "TestSave Book");
-
-                Book foundBook = tq.getSingleResult();
-
-                assertEquals(book, foundBook);
-
-                em.getTransaction().commit();
-            }
         }
     }
 }

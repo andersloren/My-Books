@@ -101,6 +101,14 @@ class BookServiceTest {
     }
 
     @Test
+    void testSaveBookInvalidIsNull() {
+        Book book = new Book();
+        book.setTitle(null);
+
+        this.bookService.saveBook(book);
+    }
+
+    @Test
     void testUpdateBookSuccess() {
 
         Author author = new Author();
