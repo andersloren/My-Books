@@ -34,7 +34,6 @@ public class Book {
     @ManyToMany(mappedBy = "books")
     private Set<Author> authors = new HashSet<>();
 
-    @NotNull
     @Size(
             min = 2,
             max = 20,
